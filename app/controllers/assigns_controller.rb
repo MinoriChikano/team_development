@@ -17,7 +17,6 @@ class AssignsController < ApplicationController
   def destroy
     assign = Assign.find(params[:id])
     destroy_message = assign_destroy(assign, assign.user)
-
     redirect_to team_url(params[:team_id]), notice: destroy_message
   end
 
@@ -30,13 +29,30 @@ class AssignsController < ApplicationController
     if assigned_user == assign.team.owner
       I18n.t('views.messages.cannot_delete_the_leader')
     elsif Assign.where(user_id: assigned_user.id).count == 1
-      I18n.t('views.messages.cannot_delete_only_a_member')
+      I18n.t('views.messages.cannot_delete_only_a_member') 
+    elsif current_user.id != assigned_user.id
+      if current_user == assign.team.owner 
+        assign.destroy
+        set_next_team(assign, assigned_user)
+        I18n.t('views.messages.delete_member')
+      else
+        I18n.t('views.messages.cannot_delete_member_4_some_reason')
+      end
+    elsif current_user.id != assign.team.owner.id
+      if current_user.id == assigned_user.id
+        assign.destroy
+        set_next_team(assign, assigned_user)
+        I18n.t('views.messages.delete_member')
+      else
+        I18n.t('views.messages.cannot_delete_member_4_some_reason')
+      end
     elsif assign.destroy
       set_next_team(assign, assigned_user)
       I18n.t('views.messages.delete_member')
     else
       I18n.t('views.messages.cannot_delete_member_4_some_reason')
     end
+
   end
 
   def email_exist?
