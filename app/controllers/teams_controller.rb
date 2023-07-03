@@ -16,7 +16,7 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit ;end
+  def edit; end
 
   def create
     @team = Team.new(team_params)
@@ -61,7 +61,7 @@ class TeamsController < ApplicationController
   def edit_authority
     unless current_user.id == @team.owner.id
       redirect_to @team,
-      notice: "You don't have the authority"
+                  notice: "You don't have the authority"
     end
   end
 end
