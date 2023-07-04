@@ -16,6 +16,9 @@ Rails.application.routes.draw do
         resources :comments
       end
     end
+    member do
+      post :transfer_of_authority
+    end
   end
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
